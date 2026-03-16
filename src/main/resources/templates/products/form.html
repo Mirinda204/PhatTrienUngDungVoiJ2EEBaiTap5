@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${product.id != null ? 'Edit Product' : 'Create New Product'} + ' - Product Management'">Product Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            min-height: 100vh;
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: radial-gradient(circle at top left, #e0f0ff 0, #f8f9ff 40%, #f9fafb 100%);
+            padding: 24px 0;
+        }
+
+        .navbar {
+            background: linear-gradient(90deg, #4f46e5, #7c3aed) !important;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.35);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.3rem;
+            letter-spacing: 0.03em;
+        }
+
+        .page-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .container-main {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 24px 28px;
+            box-shadow:
+                0 18px 45px rgba(15, 23, 42, 0.18),
+                0 0 0 1px rgba(148, 163, 184, 0.15);
+            margin-top: 26px;
+            margin-bottom: 40px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .page-title {
+            font-size: 1.6rem;
+            color: #111827;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-title i {
+            color: #4f46e5;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4f46e5, #6366f1);
+            border: none;
+            font-weight: 600;
+            border-radius: 999px;
+            padding-inline: 20px;
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #4338ca, #4f46e5);
+            transform: translateY(-1px);
+            box-shadow: 0 14px 32px rgba(79, 70, 229, 0.55);
+        }
+
+        .btn-secondary {
+            border-radius: 999px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            font-weight: 650;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .form-control,
+        .input-group-text {
+            border-radius: 12px;
+        }
+
+        .input-group > .form-control {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .input-group-text {
+            background: #f8fafc;
+            border-color: #e5e7eb;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .form-control:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.18);
+        }
+
+        .preview-image {
+            max-width: 180px;
+            max-height: 180px;
+            margin-top: 10px;
+            border-radius: 16px;
+            object-fit: cover;
+            box-shadow: 0 12px 26px rgba(15, 23, 42, 0.22);
+        }
+
+        footer {
+            font-size: 0.8rem;
+            color: #9ca3af;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">🛍️ Product Management</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/products">Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/products/create">Create New</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-wrapper">
+    <!-- Main Container -->
+    <div class="container-main">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">
+                <i th:class="${product.id != null ? 'fas fa-edit' : 'fas fa-plus-circle'}"></i>
+                <span th:text="${product.id != null ? 'Edit Product' : 'Create New Product'}"></span>
+            </h1>
+            <a href="/products" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+        </div>
+
+        <!-- Form -->
+        <form th:action="${product.id != null ? '/products/' + product.id : '/products'}" 
+              method="post" 
+              class="needs-validation" 
+              novalidate>
+
+            <!-- Product Name -->
+            <div class="form-group">
+                <label for="name" class="form-label">
+                    <i class="fas fa-cube"></i> Product Name <span class="text-danger">*</span>
+                </label>
+                <input type="text" 
+                       class="form-control" 
+                       id="name" 
+                       name="name" 
+                       placeholder="Enter product name" 
+                       required
+                       th:value="${product.name}">
+                <div class="invalid-feedback">Please enter a product name.</div>
+            </div>
+
+            <!-- Product Image URL -->
+            <div class="form-group">
+                <label for="image" class="form-label">
+                    <i class="fas fa-image"></i> Product Image URL
+                </label>
+                <input type="url" 
+                       class="form-control" 
+                       id="image" 
+                       name="image" 
+                       placeholder="https://example.com/image.jpg"
+                       th:value="${product.image}">
+                <div class="form-text">Enter the full URL of the product image.</div>
+                <img th:if="${product.image != null and product.image != ''}" 
+                     th:src="${product.image}" 
+                     alt="Product Preview" 
+                     class="preview-image"
+                     onerror="this.style.display='none'"/>
+            </div>
+
+            <!-- Price -->
+            <div class="form-group">
+                <label for="price" class="form-label">
+                    <i class="fas fa-dollar-sign"></i> Price (VND) <span class="text-danger">*</span>
+                </label>
+                <div class="input-group">
+                    <input type="number" 
+                           class="form-control" 
+                           id="price" 
+                           name="price" 
+                           placeholder="0" 
+                           min="0" 
+                           step="1000"
+                           required
+                           th:value="${product.price}">
+                    <span class="input-group-text">đ</span>
+                </div>
+                <div class="invalid-feedback">Please enter a valid price.</div>
+            </div>
+
+            <!-- Category Name -->
+            <div class="form-group">
+                <label for="categoryName" class="form-label">
+                    <i class="fas fa-tag"></i> Category Name
+                </label>
+                <input type="text" 
+                       class="form-control" 
+                       id="categoryName" 
+                       name="categoryName" 
+                       placeholder="e.g., Electronics, Clothing, Books"
+                       th:value="${product.categoryName}">
+                <div class="form-text">Optional: Enter the category for this product.</div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i th:class="${product.id != null ? 'fas fa-save' : 'fas fa-plus'}"></i>
+                    <span th:text="${product.id != null ? 'Update Product' : 'Create Product'}"></span>
+                </button>
+                <a href="/products" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center text-muted py-4">
+        <p>&copy; 2025 - Product Management Application - Developed with Spring Boot & Thymeleaf</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Bootstrap validation
+        (() => {
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+
+        // Image preview on URL change
+        document.getElementById('image').addEventListener('change', function() {
+            const img = document.querySelector('.preview-image');
+            if (this.value) {
+                if (!img) {
+                    const newImg = document.createElement('img');
+                    newImg.className = 'preview-image';
+                    newImg.alt = 'Product Preview';
+                    newImg.onerror = function() { this.style.display = 'none'; };
+                    this.parentElement.appendChild(newImg);
+                }
+                document.querySelector('.preview-image').src = this.value;
+                document.querySelector('.preview-image').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

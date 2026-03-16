@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${book.maSach != null ? 'Chỉnh sửa Sách' : 'Thêm Sách Mới'} + ' - Quản lý Sách'">Quản lý Sách</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 20px;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        .container-main {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+            max-width: 700px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 15px;
+        }
+        .page-title {
+            font-size: 2rem;
+            color: #333;
+            font-weight: 600;
+        }
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-text {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+        .input-group-text {
+            background-color: #f8f9fa;
+            border-color: #dee2e6;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/books">📚 Quản lý Sách</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/books">Danh sách sách</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/books/create">Thêm sách mới</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container container-main">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">
+                <i th:class="${book.maSach != null ? 'fas fa-edit' : 'fas fa-plus-circle'}"></i>
+                <span th:text="${book.maSach != null ? 'Chỉnh sửa Sách' : 'Thêm Sách Mới'}"></span>
+            </h1>
+        </div>
+
+        <!-- Form -->
+        <form th:action="${book.maSach != null ? @{/books/{id}(id=${book.maSach})} : @{/books}}" 
+              method="post" 
+              class="needs-validation" 
+              novalidate>
+
+            <!-- Mã Sách -->
+            <div class="form-group" th:unless="${book.maSach != null}">
+                <label for="maSach" class="form-label">
+                    <i class="fas fa-barcode"></i> Mã Sách <span class="text-danger">*</span>
+                </label>
+                <input type="text" 
+                       class="form-control" 
+                       id="maSach" 
+                       name="maSach" 
+                       placeholder="Nhập mã sách (ví dụ: S001)" 
+                       required
+                       th:value="${book.maSach}">
+                <div class="form-text">Mã sách phải là duy nhất và không thể thay đổi sau khi tạo.</div>
+            </div>
+
+            <!-- Tên Sách -->
+            <div class="form-group">
+                <label for="tenSach" class="form-label">
+                    <i class="fas fa-book"></i> Tên Sách <span class="text-danger">*</span>
+                </label>
+                <input type="text" 
+                       class="form-control" 
+                       id="tenSach" 
+                       name="tenSach" 
+                       placeholder="Nhập tên sách" 
+                       required
+                       th:value="${book.tenSach}">
+                <div class="invalid-feedback">Vui lòng nhập tên sách.</div>
+            </div>
+
+            <!-- Tác Giả -->
+            <div class="form-group">
+                <label for="tacGia" class="form-label">
+                    <i class="fas fa-user"></i> Tác Giả <span class="text-danger">*</span>
+                </label>
+                <input type="text" 
+                       class="form-control" 
+                       id="tacGia" 
+                       name="tacGia" 
+                       placeholder="Nhập tên tác giả" 
+                       required
+                       th:value="${book.tacGia}">
+                <div class="invalid-feedback">Vui lòng nhập tên tác giả.</div>
+            </div>
+
+            <!-- Đơn Giá -->
+            <div class="form-group">
+                <label for="donGia" class="form-label">
+                    <i class="fas fa-dollar-sign"></i> Đơn Giá (VNĐ) <span class="text-danger">*</span>
+                </label>
+                <div class="input-group">
+                    <input type="number" 
+                           class="form-control" 
+                           id="donGia" 
+                           name="donGia" 
+                           placeholder="0" 
+                           min="0" 
+                           step="1000"
+                           required
+                           th:value="${book.donGia}">
+                    <span class="input-group-text">đ</span>
+                </div>
+                <div class="invalid-feedback">Vui lòng nhập giá sách hợp lệ.</div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i th:class="${book.maSach != null ? 'fas fa-save' : 'fas fa-plus'}"></i>
+                    <span th:text="${book.maSach != null ? 'Cập nhật Sách' : 'Thêm Sách'}"></span>
+                </button>
+                <a href="/books" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-times"></i> Hủy
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center text-muted py-4">
+        <p>&copy; 2024 Ứng dụng Quản lý Sách - Phát triển bằng Spring Boot & Thymeleaf</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Bootstrap validation
+        (() => {
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
+</body>
+</html>

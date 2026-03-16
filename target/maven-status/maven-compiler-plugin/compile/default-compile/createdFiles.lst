@@ -1,0 +1,11 @@
+com\example\bookmanagement\DataLoader.class
+com\example\bookmanagement\BookManagementApplication.class
+com\example\bookmanagement\Book.class
+com\example\bookmanagement\BookController$BookRestController.class
+com\example\bookmanagement\BookService.class
+com\example\bookmanagement\Product.class
+com\example\bookmanagement\ProductRepository.class
+com\example\bookmanagement\BookController.class
+com\example\bookmanagement\BookRepository.class
+com\example\bookmanagement\ProductController.class
+com\example\bookmanagement\ProductService.class
